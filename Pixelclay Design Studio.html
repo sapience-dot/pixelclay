@@ -1,0 +1,838 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Pixelclay Design Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Kannada:wght@500&display=swap">
+<style>
+/* Layout: a 600vh sticky scroll scene where pixels become clay, then a calm editorial site over a 12-col grid; hash-routed pages */
+:root{
+  --paper:#F4F1EC; --surface:#FBF9F6; --ink:#1A1A1A; --muted:#5E5B55; --line:#D9D4CB;
+  --accent:#0F5C4A; --clay:#FF4B2B; --on-accent:#F4F1EC;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --f-kn:"Noto Sans Kannada","Tunga",sans-serif;
+  --gut:max(16px,env(safe-area-inset-left,0px));
+  --gutR:max(16px,env(safe-area-inset-right,0px));
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#141414; --surface:#1D1D1C; --ink:#F1EDE6; --muted:#A3A09A; --line:#2E2E2C;
+  --accent:#3FB58F; --clay:#FF6A4D; --on-accent:#141414; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#141414; --surface:#1D1D1C; --ink:#F1EDE6; --muted:#A3A09A; --line:#2E2E2C;
+  --accent:#3FB58F; --clay:#FF6A4D; --on-accent:#141414; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1240px;margin-inline:auto;padding-left:var(--gut);padding-right:var(--gutR)}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.label{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+p{margin:0;max-width:62ch}
+
+/* ---------- nav ---------- */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:color-mix(in srgb,var(--paper) 78%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;position:relative}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:800;font-stretch:120%;font-size:20px;letter-spacing:-.02em}
+.mark{width:26px;height:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+.brand:hover .mark{transform:rotate(90deg)}
+.mark i{background:var(--ink);display:block}
+.mark i:nth-child(3),.mark i:nth-child(9){background:var(--clay);border-radius:50%}
+.mark i:nth-child(5){background:var(--accent);border-radius:4px}
+.links{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.links a{text-decoration:none;font-size:15px;font-weight:500;padding:6px 12px;border-radius:999px;color:var(--muted);transition:color .2s,background .2s}
+.links a:hover{color:var(--ink)}
+.links a[aria-current="page"]{background:var(--ink);color:var(--paper)}
+.menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;font:500 14px var(--f-body);cursor:pointer}
+@media (max-width:760px){
+  .menu-btn{display:block}
+  .links{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:var(--paper);border-bottom:1px solid var(--line);padding:8px var(--gutR) 16px var(--gut)}
+  .links.open{display:flex}
+  .links a{display:block;font-size:20px;padding:10px 0;border-radius:0;background:none!important;color:var(--ink);font-family:var(--f-display);font-weight:700}
+  .links a[aria-current="page"]{color:var(--accent)}
+}
+
+main section{padding-block:80px}
+.btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:16px;padding:14px 22px;border-radius:999px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;font-family:var(--f-body);transition:transform .25s cubic-bezier(.2,.8,.2,1),border-radius .3s;will-change:transform}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn .ar{transition:transform .25s}.btn:hover .ar{transform:translateX(5px)}
+
+/* ---------- scroll scene ---------- */
+main section.scene{padding:0;height:600vh;position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;margin-top:-62px}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cap{position:absolute;left:0;right:0;bottom:12vh;pointer-events:none;will-change:opacity,transform}
+.cap .wrap{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.cap.on{pointer-events:auto}
+.cap h1{font-size:clamp(46px,8.2vw,124px);line-height:.88;font-weight:850;font-stretch:70%;max-width:9ch}
+.cap h1 em{font-style:normal;font-stretch:125%;font-weight:300;color:var(--accent)}
+.cap h1 .soft{color:var(--clay);font-weight:900;font-stretch:125%}
+.cap h2{font-size:clamp(34px,5.2vw,74px);line-height:.95;font-weight:800;font-stretch:78%;max-width:12ch}
+.cap h2 .c{color:var(--clay)} .cap h2 .a{color:var(--accent)}
+.cap p{font-size:18px;color:var(--muted);max-width:38ch}
+.cap .step{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;color:var(--clay)}
+.kn{font-family:var(--f-kn);font-size:15px;color:var(--clay)}
+.rail{position:absolute;right:calc(var(--gutR) + 8px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;align-items:flex-end}
+.rail span{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .3s}
+.rail span::after{content:"";width:18px;height:2px;background:var(--line);transition:width .35s,background .35s}
+.rail span.on{color:var(--ink)}.rail span.on::after{width:40px;background:var(--clay)}
+.hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;transition:opacity .4s}
+.hint i{width:1px;height:34px;background:linear-gradient(var(--ink),transparent);animation:drip 1.8s ease-in-out infinite;transform-origin:top}
+@keyframes drip{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+.coord{position:absolute;left:var(--gut);top:84px}
+@media (max-width:900px){
+  .cap{bottom:9vh}
+  .cap::before{content:"";position:absolute;inset:-40px 0 -9vh;background:linear-gradient(to top,var(--paper) 55%,transparent);z-index:-1}
+  .rail{display:none}
+}
+
+/* strip */
+.strip{border-block:1px solid var(--line);overflow:hidden;padding-block:16px}
+.strip-in{display:flex;gap:48px;white-space:nowrap;width:max-content;animation:run 38s linear infinite;font-family:var(--f-display);font-size:28px;font-weight:700;font-stretch:110%}
+.strip-in span::after{content:"";display:inline-block;width:10px;height:10px;background:var(--clay);border-radius:50%;margin-left:48px;vertical-align:middle}
+.strip-in span:nth-child(even)::after{border-radius:0;background:var(--accent)}
+@keyframes run{to{transform:translateX(-50%)}}
+
+/* section heads with self-drawing squiggle */
+.sec-head{display:grid;grid-template-columns:200px 1fr;gap:24px;margin-bottom:48px;align-items:baseline}
+.sec-head h2{font-size:clamp(34px,4.8vw,64px);line-height:1;font-weight:800;font-stretch:85%;position:relative;padding-bottom:18px}
+.squig{display:block;width:min(260px,60%);height:16px;margin-top:10px;overflow:visible}
+.squig path{fill:none;stroke:var(--clay);stroke-width:3;stroke-linecap:round;stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset 1.4s cubic-bezier(.6,0,.2,1) .2s}
+.in .squig path{stroke-dashoffset:0}
+@media (max-width:700px){.sec-head{grid-template-columns:1fr;gap:10px}}
+
+/* reveal: visible at rest, only moves */
+.rv{transform:translateY(26px);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.rv.in{transform:none}
+
+/* services list */
+.svc{border-top:1.5px solid var(--ink)}
+.svc-row{display:grid;grid-template-columns:200px 1.1fr 1fr auto;gap:24px;padding-block:28px;border-bottom:1px solid var(--line);align-items:start;text-decoration:none;position:relative;overflow:hidden}
+.svc-row::before{content:"";position:absolute;inset:0;background:var(--surface);transform:scaleY(0);transform-origin:bottom;transition:transform .45s cubic-bezier(.2,.8,.2,1);z-index:-1}
+.svc-row:hover::before{transform:scaleY(1)}
+.svc-row h3{font-size:clamp(28px,3vw,36px);font-weight:700;font-stretch:95%;transition:font-stretch .45s cubic-bezier(.2,.8,.2,1),color .3s}
+.svc-row:hover h3{font-stretch:125%;color:var(--accent)}
+.svc-row p{color:var(--muted);min-width:0}
+.svc-row .tl{font-family:var(--f-mono);font-size:13px;color:var(--ink);white-space:nowrap}
+@media (max-width:860px){.svc-row{grid-template-columns:1fr;gap:8px}}
+
+/* work */
+.work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 28px}
+.proj{text-decoration:none;display:flex;flex-direction:column;gap:14px}
+.proj:nth-child(even){transform:translateY(64px)}
+.proj:nth-child(even).rv{transform:translateY(90px)}
+.proj:nth-child(even).rv.in{transform:translateY(64px)}
+.cover{aspect-ratio:4/3;max-width:100%;border-radius:4px;position:relative;overflow:hidden;transition:border-radius .6s cubic-bezier(.2,.8,.2,1)}
+.cover b{position:absolute;display:block;transition:transform .8s cubic-bezier(.2,.8,.2,1),border-radius .6s}
+.proj:hover .cover{border-radius:48px}
+.proj:hover .cover b{transform:scale(1.06) rotate(-3deg)}
+.proj:hover .cover b:nth-child(2n){transform:translateY(-6%) scale(1.04)}
+.proj-meta{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.proj h3{font-size:26px;font-weight:700;font-stretch:95%;transition:font-stretch .45s}
+.proj:hover h3{font-stretch:125%}
+.proj p{color:var(--muted);font-size:15.5px}
+.chip{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:3px 9px;color:var(--muted)}
+.work-pad{padding-bottom:64px}
+@media (max-width:700px){.work-grid{grid-template-columns:1fr}.proj:nth-child(even),.proj:nth-child(even).rv.in{transform:none}.proj:nth-child(even).rv{transform:translateY(26px)}.work-pad{padding-bottom:0}}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px}
+.filters button{font:500 14px var(--f-body);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer;transition:background .2s,color .2s}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* the wheel */
+.wheel-sec{background:var(--surface);border-block:1px solid var(--line)}
+.wheel-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:48px;align-items:center}
+.wheel-grid h2{font-size:clamp(40px,6vw,84px);line-height:.9;font-weight:850;font-stretch:72%}
+.wheel-grid p{color:var(--muted);margin-top:18px}
+.wheel-box{position:relative;border-radius:8px;background:var(--paper);border:1px solid var(--line);aspect-ratio:5/4;max-width:100%;overflow:hidden}
+.wheel-box canvas{width:100%;height:100%;display:block;touch-action:pan-y;cursor:ew-resize}
+.wheel-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.wheel-tools .btn{padding:11px 18px;font-size:15px}
+.wheel-tip{position:absolute;left:14px;top:12px}
+.wheel-glaze{position:absolute;right:14px;top:12px}
+@media (max-width:860px){.wheel-grid{grid-template-columns:1fr}}
+
+/* cta band */
+.cta{background:var(--accent);color:var(--on-accent);overflow:hidden;position:relative}
+.cta .wrap{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:end;padding-block:88px;position:relative}
+.cta h2{font-size:clamp(40px,7vw,104px);line-height:.88;font-weight:850;font-stretch:72%}
+.cta .btn{background:var(--on-accent);color:var(--accent);border-color:var(--on-accent)}
+.cta-dots{position:absolute;inset:0;opacity:.18;background-image:radial-gradient(var(--on-accent) 1.5px,transparent 1.6px);background-size:22px 22px;animation:drift 30s linear infinite}
+@keyframes drift{to{background-position:220px 110px}}
+@media (max-width:760px){.cta .wrap{grid-template-columns:1fr}}
+
+/* services page */
+.svc-detail{display:grid;grid-template-columns:200px 1fr 1fr;gap:28px;padding-block:44px;border-top:1px solid var(--line)}
+.svc-detail h3{font-size:clamp(32px,3.8vw,48px);font-weight:800;font-stretch:88%;line-height:1}
+.svc-detail ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.svc-detail li{display:flex;gap:10px;font-size:15.5px}
+.svc-detail li::before{content:"";width:8px;height:8px;margin-top:8px;flex:none;background:var(--clay);border-radius:2px;transition:border-radius .4s}
+.svc-detail:hover li::before{border-radius:50%}
+.svc-detail .col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.price{display:flex;gap:28px;flex-wrap:wrap;font-family:var(--f-mono);font-size:13px}
+.price div{display:flex;flex-direction:column;gap:2px}
+.price strong{font-family:var(--f-display);font-size:24px;font-weight:700;font-stretch:100%;font-variant-numeric:tabular-nums}
+@media (max-width:860px){.svc-detail{grid-template-columns:1fr;gap:14px}}
+
+/* about */
+.about-lede{font-family:var(--f-display);font-size:clamp(28px,3.6vw,46px);line-height:1.1;font-weight:500;font-stretch:88%;max-width:24ch;text-wrap:balance}
+.about-lede span{color:var(--accent)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;border-top:1.5px solid var(--ink);padding-top:22px;margin-top:56px}
+.facts dt{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.facts dd{margin:6px 0 0;font-weight:600;font-size:17px}
+@media (max-width:760px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.value{display:flex;flex-direction:column;gap:10px;padding-top:18px;border-top:3px solid var(--ink)}
+.value:nth-child(2){border-color:var(--accent)}.value:nth-child(3){border-color:var(--clay)}
+.value h3{font-size:26px;font-weight:700}
+.value p{color:var(--muted)}
+@media (max-width:760px){.values{grid-template-columns:1fr}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.two p+p{margin-top:16px}
+@media (max-width:760px){.two{grid-template-columns:1fr;gap:24px}}
+
+/* page heads + letter squish */
+.page-head{padding-block:72px 24px!important}
+.page-head h1{font-size:clamp(52px,10vw,148px);line-height:.86;font-weight:850;font-stretch:70%}
+.page-head p{margin-top:24px;font-size:19px;color:var(--muted)}
+.sq .w{display:inline-block;white-space:nowrap}
+.sq .l{display:inline-block;font-stretch:inherit}
+.sq.go .l{animation:squish 1.1s cubic-bezier(.2,.9,.2,1) both;animation-delay:calc(var(--i) * 32ms)}
+@keyframes squish{0%{font-stretch:125%;transform:translateY(.12em) scaleY(.7)}55%{transform:scaleY(1.06)}100%{font-stretch:70%;transform:none}}
+
+/* contact */
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:56px}
+.contact-grid h1{font-size:clamp(46px,7vw,100px);line-height:.9;font-weight:850;font-stretch:72%}
+.contact-info{display:grid;gap:22px;margin-top:36px}
+.contact-info .v{font-size:19px;font-weight:600;user-select:all}
+form{display:grid;gap:20px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:28px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:560px){.f-row{grid-template-columns:1fr}form{padding:20px}}
+label{display:grid;gap:6px;font-size:14px;font-weight:600}
+input,select,textarea{font:400 16px var(--f-body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:12px 14px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+textarea{min-height:130px;resize:vertical}
+.types{display:flex;flex-wrap:wrap;gap:8px}
+.types label{display:inline-flex;align-items:center;gap:8px;font-weight:500;border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;background:var(--paper)}
+.types input{width:auto;accent-color:var(--accent)}
+.err{color:#B3261E;font-size:14px}
+:root[data-theme="dark"] .err{color:#FF8A7E}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .err{color:#FF8A7E}}
+.sent{display:grid;gap:14px}
+.sent pre{white-space:pre-wrap;font:13px/1.6 var(--f-mono);background:var(--paper);border:1px solid var(--line);padding:16px;border-radius:4px;margin:0;max-height:260px;overflow:auto}
+@media (max-width:860px){.contact-grid{grid-template-columns:1fr;gap:36px}}
+
+footer{border-top:1px solid var(--line);padding-block:48px calc(28px + env(safe-area-inset-bottom,0px))}
+.foot-big{font-family:var(--f-display);font-weight:900;font-stretch:125%;font-size:clamp(48px,13vw,190px);line-height:.8;letter-spacing:-.04em;color:var(--ink);margin-bottom:40px;white-space:nowrap;overflow:hidden}
+.foot-big span{color:var(--clay)}
+.foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px;font-size:15px}
+.foot ul{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:4px}
+.foot a{text-decoration:none;color:var(--muted)}.foot a:hover{color:var(--ink)}
+.foot-base{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:36px}
+@media (max-width:700px){.foot{grid-template-columns:1fr}}
+
+/* clay cursor */
+.blob{position:fixed;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--clay);pointer-events:none;z-index:20;transition:width .3s,height .3s,margin .3s,border-radius .3s,background .3s;mix-blend-mode:multiply;display:none}
+:root[data-theme="dark"] .blob{mix-blend-mode:screen}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .blob{mix-blend-mode:screen}}
+.blob.big{width:56px;height:56px;margin:-28px 0 0 -28px;background:color-mix(in srgb,var(--accent) 35%,transparent)}
+@media (pointer:fine){.blob{display:block}}
+
+/* ---------- splash: the kiln ---------- */
+#splash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;cursor:pointer;animation:failsafe 0s 7s forwards}
+@keyframes failsafe{to{visibility:hidden;pointer-events:none}}
+.tiles{position:absolute;inset:0;display:grid}
+.tiles i{background:var(--ink);transition:transform .7s cubic-bezier(.6,0,.3,1),border-radius .5s;transition-delay:var(--dl)}
+#splash.out .tiles i{transform:translateY(40%) scale(0);border-radius:50%}
+.kiln{position:relative;display:flex;flex-direction:column;align-items:center;gap:26px;color:var(--paper);transition:transform .45s cubic-bezier(.6,0,.3,1),opacity .35s;padding-inline:16px;text-align:center}
+#splash.out .kiln{transform:scale(.85);opacity:0}
+.big-mark{width:min(120px,28vw);aspect-ratio:1;display:grid;grid-template-columns:repeat(3,1fr);gap:7%}
+.big-mark b{background:var(--paper);transform:scale(0);animation:pop .55s cubic-bezier(.3,1.7,.5,1) forwards;animation-delay:calc(var(--n) * 85ms + 150ms)}
+.big-mark b.c{background:var(--clay);animation-name:pop,soften}
+.big-mark b.a{background:var(--accent);animation-name:pop,halfsoft}
+@keyframes pop{to{transform:scale(1)}}
+@keyframes soften{0%,60%{border-radius:0}100%{border-radius:50%}}
+@keyframes halfsoft{0%,60%{border-radius:0}100%{border-radius:28%}}
+.big-mark b.c,.big-mark b.a{animation-duration:.55s,1.3s}
+.temp{font-family:var(--f-display);font-weight:300;font-stretch:125%;font-size:clamp(40px,8vw,88px);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.temp span{color:var(--clay);font-weight:800}
+.kiln .label{color:color-mix(in srgb,var(--paper) 65%,transparent)}
+.pixbar{display:flex;gap:4px}
+.pixbar i{width:10px;height:10px;background:color-mix(in srgb,var(--paper) 18%,transparent);transition:background .15s,border-radius .3s}
+.pixbar i.on{background:var(--clay);border-radius:50%}
+.skip{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center}
+#splash .skip{color:color-mix(in srgb,var(--paper) 45%,transparent)}
+#splash.out .skip{opacity:0}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.rv,.rv.in{transform:none}.blob{display:none}#splash{display:none}}
+</style>
+<noscript><style>#splash{display:none}</style></noscript>
+
+<div id="splash" role="presentation" aria-hidden="true">
+  <div class="tiles" id="tiles"></div>
+  <div class="kiln">
+    <div class="big-mark"><b style="--n:0"></b><b style="--n:1"></b><b class="c" style="--n:2"></b><b style="--n:3"></b><b class="a" style="--n:4"></b><b style="--n:5"></b><b style="--n:6"></b><b style="--n:7"></b><b class="c" style="--n:8"></b></div>
+    <div class="temp"><span id="deg">0</span>°C</div>
+    <div class="pixbar" id="pixbar"></div>
+    <span class="label" id="kilnLine">Loading the kiln</span>
+  </div>
+  <span class="label skip">Tap anywhere to skip</span>
+</div>
+<script>
+(function(){
+  var sp=document.getElementById("splash");
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){sp.remove();return}
+  document.documentElement.style.overflow="hidden";
+  // tile grid, exit ripples out from the centre
+  var cols=innerWidth<600?6:12,rows=Math.ceil(cols*innerHeight/innerWidth),tl=document.getElementById("tiles"),h="";
+  tl.style.gridTemplateColumns="repeat("+cols+",1fr)";tl.style.gridTemplateRows="repeat("+rows+",1fr)";
+  for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){var d=Math.hypot(c-(cols-1)/2,(r-(rows-1)/2)*1.2);h+='<i style="--dl:'+(d*45+Math.random()*60|0)+'ms"></i>'}
+  tl.innerHTML=h;
+  var bar=document.getElementById("pixbar"),B=20;bar.innerHTML=new Array(B+1).join("<i></i>");
+  var cells=bar.children,deg=document.getElementById("deg"),line=document.getElementById("kilnLine");
+  var lines=[[0,"Loading the kiln"],[350,"Drying the clay"],[700,"Burning off the rough edges"],[1050,"Glazing the pixels"],[1200,"Fired. Opening the kiln"]];
+  var t0=performance.now(),DUR=1900,done=false,lastT=-1;
+  function step(now){
+    if(done)return;
+    var p=Math.min(1,(now-t0)/DUR),e=1-Math.pow(1-p,3),T=Math.round(e*1200/10)*10;
+    if(T!==lastT){lastT=T;deg.textContent=T.toLocaleString("en-IN");
+      var on=Math.round(e*B);for(var i=0;i<B;i++)cells[i].classList.toggle("on",i<on);
+      for(var k=lines.length-1;k>=0;k--)if(T>=lines[k][0]){if(line.textContent!==lines[k][1])line.textContent=lines[k][1];break}}
+    if(p<1)requestAnimationFrame(step);else setTimeout(leave,280);
+  }
+  function leave(){
+    if(done)return;done=true;deg.textContent="1,200";line.textContent=lines[4][1];
+    sp.classList.add("out");document.documentElement.style.overflow="";
+    setTimeout(function(){sp.remove()},1500);
+  }
+  sp.addEventListener("click",leave);
+  addEventListener("keydown",function(){leave()},{once:true});
+  addEventListener("wheel",leave,{once:true,passive:true});
+  requestAnimationFrame(step);
+  setTimeout(leave,3200);
+})();
+</script>
+
+<div class="blob" id="blob" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="#home" aria-label="Pixelclay home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>pixelclay</a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks">Menu</button>
+    <ul class="links" id="navLinks">
+      <li><a href="#home" data-route="home">Home</a></li>
+      <li><a href="#work" data-route="work">Work</a></li>
+      <li><a href="#services" data-route="services">Services</a></li>
+      <li><a href="#about" data-route="about">About</a></li>
+      <li><a href="#contact" data-route="contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ================= HOME ================= -->
+<div class="view" data-view="home">
+  <section class="scene" id="scene" aria-label="Pixels shaped into clay">
+    <div class="stage">
+      <canvas id="px" aria-hidden="true"></canvas>
+      <span class="label coord">14.46°N · 75.92°E · Davanagere</span>
+
+      <div class="cap" data-s="0"><div class="wrap">
+        <span class="kn">ಪಿಕ್ಸೆಲ್‌ಕ್ಲೇ ವಿನ್ಯಾಸ ಸ್ಟುಡಿಯೋ</span>
+        <h1>Sharp <em>pixels,</em> shaped like <span class="soft">clay.</span></h1>
+        <p>A design studio in Davanagere. Scroll, and watch how we work.</p>
+      </div></div>
+      <div class="cap" data-s="1"><div class="wrap">
+        <span class="step">01 · DIG</span>
+        <h2>First, we <span class="c">gather.</span></h2>
+        <p>Your story, your customers, the street your shop stands on. We listen before we draw.</p>
+      </div></div>
+      <div class="cap" data-s="2"><div class="wrap">
+        <span class="step">02 · SHAPE</span>
+        <h2>Then we shape it <span class="c">by hand.</span></h2>
+        <p>Turn after turn on the wheel, until the form feels right in your hands and your customers' hands.</p>
+      </div></div>
+      <div class="cap" data-s="3"><div class="wrap">
+        <span class="step">03 · REFINE</span>
+        <h2>Exact on a <span class="a">screen.</span> Warm on a signboard.</h2>
+        <p>Every pixel placed on purpose, in English and Kannada.</p>
+      </div></div>
+      <div class="cap" data-s="4"><div class="wrap">
+        <span class="step">04 · FIRE</span>
+        <h2>Fired, finished, and <span class="c">yours to keep.</span></h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a class="btn mag" href="#contact">Start a project <span class="ar">→</span></a>
+          <a class="btn ghost mag" href="#work">See the work</a>
+        </div>
+      </div></div>
+
+      <div class="rail" aria-hidden="true"><span data-r="0">Pixels</span><span data-r="1">Dig</span><span data-r="2">Shape</span><span data-r="3">Refine</span><span data-r="4">Fire</span></div>
+      <div class="hint label" id="hint" aria-hidden="true">Scroll<i></i></div>
+    </div>
+  </section>
+
+  <div class="strip" aria-hidden="true"><div class="strip-in">
+    <span>Brand identity</span><span>Websites</span><span>Product UI/UX</span><span>Packaging</span><span>Motion</span><span>Design systems</span>
+    <span>Brand identity</span><span>Websites</span><span>Product UI/UX</span><span>Packaging</span><span>Motion</span><span>Design systems</span>
+  </div></div>
+
+  <section><div class="wrap">
+    <div class="sec-head rv"><span class="label">What we do</span><h2>Four crafts, one studio table.<svg class="squig" viewBox="0 0 260 16" aria-hidden="true"><path d="M2 9 C 22 1, 42 15, 62 8 S 102 1, 122 8 S 162 15, 182 8 S 222 1, 258 8"/></svg></h2></div>
+    <div class="svc">
+      <a class="svc-row rv" href="#services"><span class="label">Brand</span><h3>Identity</h3><p>Names, logos, type and colour, plus the rules that keep them steady on shopfronts, packs and screens.</p><span class="tl">4–6 weeks</span></a>
+      <a class="svc-row rv" href="#services"><span class="label">Web</span><h3>Websites</h3><p>Fast, readable sites in English and Kannada that your own team can update after launch.</p><span class="tl">5–8 weeks</span></a>
+      <a class="svc-row rv" href="#services"><span class="label">Product</span><h3>UI / UX</h3><p>Apps and dashboards designed with the people who will use them every day.</p><span class="tl">6–12 weeks</span></a>
+      <a class="svc-row rv" href="#services"><span class="label">Print</span><h3>Packaging</h3><p>Labels, boxes and menus with print-ready files and a press check with your printer.</p><span class="tl">3–5 weeks</span></a>
+    </div>
+  </div></section>
+
+  <section style="padding-top:0"><div class="wrap work-pad">
+    <div class="sec-head rv"><span class="label">Selected work</span><h2>Recent shapes.<svg class="squig" viewBox="0 0 260 16" aria-hidden="true"><path d="M2 9 C 22 1, 42 15, 62 8 S 102 1, 122 8 S 162 15, 182 8 S 222 1, 258 8"/></svg></h2></div>
+    <div class="work-grid" id="homeWork"></div>
+    <div style="margin-top:72px"><a class="btn ghost mag" href="#work">All projects <span class="ar">→</span></a></div>
+  </div></section>
+
+  <section class="wheel-sec"><div class="wrap wheel-grid">
+    <div class="rv">
+      <span class="label">Your turn</span>
+      <h2 style="margin-top:12px">Throw a pot.</h2>
+      <p>Drag sideways across the clay to pull it in or push it out. This is how every Pixelclay project feels from the inside: rough at first, then right.</p>
+      <div class="wheel-tools">
+        <button class="btn mag" type="button" id="glaze">Glaze it</button>
+        <button class="btn ghost mag" type="button" id="reset">Start over</button>
+      </div>
+    </div>
+    <div class="wheel-box rv">
+      <canvas id="wheel" aria-label="Interactive potter's wheel. Drag across the clay to shape it."></canvas>
+      <span class="label wheel-tip">Drag to shape</span>
+      <span class="label wheel-glaze" id="glazeName">Raw clay</span>
+    </div>
+  </div></section>
+
+  <section class="cta"><div class="cta-dots" aria-hidden="true"></div><div class="wrap"><h2>Bring us a rough idea.</h2><a class="btn mag" href="#contact">Start a project <span class="ar">→</span></a></div></section>
+</div>
+
+<!-- ================= WORK ================= -->
+<div class="view" data-view="work" hidden>
+  <section class="page-head"><div class="wrap">
+    <span class="label">Work</span>
+    <h1 class="sq" style="margin-top:14px">Projects in hand.</h1>
+    <p>Identity, web, product and packaging work for businesses in Karnataka and beyond.</p>
+  </div></section>
+  <section style="padding-top:24px"><div class="wrap work-pad">
+    <div class="filters" role="group" aria-label="Filter projects">
+      <button type="button" data-f="All" aria-pressed="true">All</button>
+      <button type="button" data-f="Brand" aria-pressed="false">Brand</button>
+      <button type="button" data-f="Web" aria-pressed="false">Web</button>
+      <button type="button" data-f="Product" aria-pressed="false">Product</button>
+      <button type="button" data-f="Packaging" aria-pressed="false">Packaging</button>
+    </div>
+    <div class="work-grid" id="allWork"></div>
+  </div></section>
+</div>
+
+<!-- ================= SERVICES ================= -->
+<div class="view" data-view="services" hidden>
+  <section class="page-head"><div class="wrap">
+    <span class="label">Services</span>
+    <h1 class="sq" style="margin-top:14px">What we make.</h1>
+    <p>Every engagement is fixed in scope and fee, quoted in rupees, with GST shown separately.</p>
+  </div></section>
+  <section style="padding-top:24px"><div class="wrap">
+    <div class="svc-detail rv">
+      <span class="label">01 · Brand</span>
+      <div class="col"><h3>Brand identity</h3><p style="color:var(--muted)">For new businesses, and for older ones whose look no longer matches who they are.</p>
+        <div class="price"><div><span class="label">From</span><strong>₹75,000</strong></div><div><span class="label">Timeline</span><strong>4–6 wks</strong></div></div></div>
+      <div class="col"><span class="label">You receive</span><ul><li>Logo suite in English and Kannada</li><li>Colour, type and photography rules</li><li>Stationery, signage and social templates</li><li>A brand guide your printer can follow</li></ul></div>
+    </div>
+    <div class="svc-detail rv">
+      <span class="label">02 · Web</span>
+      <div class="col"><h3>Websites</h3><p style="color:var(--muted)">Marketing sites, catalogues and online stores that load fast on a 4G phone.</p>
+        <div class="price"><div><span class="label">From</span><strong>₹1,20,000</strong></div><div><span class="label">Timeline</span><strong>5–8 wks</strong></div></div></div>
+      <div class="col"><span class="label">You receive</span><ul><li>Sitemap, content plan and copy help</li><li>Responsive design and development</li><li>An editor your team can use</li><li>Search basics, analytics and hosting setup</li></ul></div>
+    </div>
+    <div class="svc-detail rv">
+      <span class="label">03 · Product</span>
+      <div class="col"><h3>UI / UX design</h3><p style="color:var(--muted)">Apps, dashboards and internal tools, shaped with the people who use them.</p>
+        <div class="price"><div><span class="label">From</span><strong>₹2,00,000</strong></div><div><span class="label">Timeline</span><strong>6–12 wks</strong></div></div></div>
+      <div class="col"><span class="label">You receive</span><ul><li>User interviews and journey maps</li><li>Clickable prototypes tested with real users</li><li>Production-ready screens in Figma</li><li>A component library for your developers</li></ul></div>
+    </div>
+    <div class="svc-detail rv" style="border-bottom:1px solid var(--line)">
+      <span class="label">04 · Print</span>
+      <div class="col"><h3>Packaging &amp; print</h3><p style="color:var(--muted)">Labels, cartons, menus and brochures, followed all the way to the press.</p>
+        <div class="price"><div><span class="label">From</span><strong>₹40,000</strong></div><div><span class="label">Timeline</span><strong>3–5 wks</strong></div></div></div>
+      <div class="col"><span class="label">You receive</span><ul><li>Structural dielines and mock-ups</li><li>FSSAI and legal-metrology label layouts</li><li>Print-ready CMYK files</li><li>A press check with your printer</li></ul></div>
+    </div>
+  </div></section>
+  <section class="cta"><div class="cta-dots" aria-hidden="true"></div><div class="wrap"><h2>Not sure which one you need?</h2><a class="btn mag" href="#contact">Ask us <span class="ar">→</span></a></div></section>
+</div>
+
+<!-- ================= ABOUT ================= -->
+<div class="view" data-view="about" hidden>
+  <section class="page-head"><div class="wrap">
+    <span class="label">About</span>
+    <h1 class="sq" style="margin-top:14px">A studio in Davanagere.</h1>
+  </div></section>
+  <section style="padding-top:24px"><div class="wrap">
+    <p class="about-lede rv">Good design should not need a move to Bengaluru. <span>So we built the studio at home</span> and brought the work here.</p>
+    <dl class="facts rv">
+      <div><dt>Entity</dt><dd>Pixelclay Design LLP</dd></div>
+      <div><dt>LLPIN</dt><dd style="font-family:var(--f-mono);font-size:16px">AAX-1466</dd></div>
+      <div><dt>Based in</dt><dd>Davanagere, Karnataka</dd></div>
+      <div><dt>Works in</dt><dd>English · ಕನ್ನಡ</dd></div>
+    </dl>
+  </div></section>
+  <section style="padding-top:0"><div class="wrap two rv">
+    <div><span class="label">The name</span></div>
+    <div>
+      <p>A pixel is the smallest exact unit on a screen. Clay is the oldest material people shape by hand. Our work sits between the two: strict grids and systems, finished by hand until they feel right.</p>
+      <p>We stay small on purpose. The people at your first meeting are the people who design your project, and you reach us directly on the phone or WhatsApp.</p>
+    </div>
+  </div></section>
+  <section style="padding-top:0"><div class="wrap">
+    <div class="sec-head rv"><span class="label">How we work</span><h2>Three things we hold to.<svg class="squig" viewBox="0 0 260 16" aria-hidden="true"><path d="M2 9 C 22 1, 42 15, 62 8 S 102 1, 122 8 S 162 15, 182 8 S 222 1, 258 8"/></svg></h2></div>
+    <div class="values">
+      <div class="value rv"><h3>Local first</h3><p>We design for the street the shop stands on: bilingual by default, readable in bright sun, printable at the press down the road.</p></div>
+      <div class="value rv"><h3>Fixed and fair</h3><p>A written scope and a fixed fee before we start. If the scope changes, we quote the change first.</p></div>
+      <div class="value rv"><h3>Yours to keep</h3><p>You own every final file. Guidelines and editable sources come with the handover at no extra cost.</p></div>
+    </div>
+  </div></section>
+  <section class="cta"><div class="cta-dots" aria-hidden="true"></div><div class="wrap"><h2>Come by the studio.</h2><a class="btn mag" href="#contact">Get in touch <span class="ar">→</span></a></div></section>
+</div>
+
+<!-- ================= CONTACT ================= -->
+<div class="view" data-view="contact" hidden>
+  <section class="page-head" style="padding-bottom:80px!important"><div class="wrap contact-grid">
+    <div>
+      <span class="label">Contact</span>
+      <h1 class="sq" style="margin-top:14px">Let's shape something.</h1>
+      <div class="contact-info">
+        <div><span class="label">Email</span><div class="v">hello@pixelclay.in</div></div>
+        <div><span class="label">Phone / WhatsApp</span><div class="v">+91 00000 00000</div></div>
+        <div><span class="label">Studio</span><div class="v" style="user-select:text">Davanagere, Karnataka, India</div></div>
+        <div><span class="label">Hours</span><div class="v" style="user-select:text">Mon to Sat, 10:00 to 18:30 IST</div></div>
+      </div>
+    </div>
+    <div>
+      <form id="brief" novalidate>
+        <div id="formBody" style="display:grid;gap:20px">
+          <div class="f-row">
+            <label for="fName">Your name<input id="fName" name="name" autocomplete="name" required></label>
+            <label for="fEmail">Email<input id="fEmail" name="email" type="email" autocomplete="email" required></label>
+          </div>
+          <label for="fCompany">Business name<input id="fCompany" name="company" autocomplete="organization"></label>
+          <fieldset style="border:0;padding:0;margin:0;display:grid;gap:8px">
+            <legend style="font-size:14px;font-weight:600;margin-bottom:8px">What do you need?</legend>
+            <div class="types">
+              <label for="tBrand"><input type="checkbox" id="tBrand" value="Brand identity">Brand identity</label>
+              <label for="tWeb"><input type="checkbox" id="tWeb" value="Website">Website</label>
+              <label for="tProd"><input type="checkbox" id="tProd" value="UI/UX">UI / UX</label>
+              <label for="tPack"><input type="checkbox" id="tPack" value="Packaging">Packaging</label>
+            </div>
+          </fieldset>
+          <label for="fBudget">Budget
+            <select id="fBudget" name="budget">
+              <option>Under ₹50,000</option><option selected>₹50,000 to ₹1.5 lakh</option><option>₹1.5 to ₹5 lakh</option><option>Above ₹5 lakh</option><option>Not sure yet</option>
+            </select>
+          </label>
+          <label for="fMsg">Tell us about the project<textarea id="fMsg" name="message" required placeholder="What are you making, who is it for, and when do you need it?"></textarea></label>
+          <p class="err" id="fErr" hidden></p>
+          <div><button class="btn mag" type="submit">Prepare my brief <span class="ar">→</span></button></div>
+        </div>
+        <div class="sent" id="sent" hidden>
+          <span class="label">Brief ready</span>
+          <h3 style="font-size:28px;font-weight:800">Copy this and email it to us.</h3>
+          <pre id="briefOut"></pre>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn" type="button" id="copyBrief">Copy brief</button>
+            <button class="btn ghost" type="button" id="editBrief">Edit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div></section>
+</div>
+</main>
+
+<footer><div class="wrap">
+  <div class="foot-big" aria-hidden="true">pixel<span>clay</span></div>
+  <div class="foot">
+    <div><p style="color:var(--muted)">Design studio in Davanagere, Karnataka. Brands, websites, product design and packaging.</p></div>
+    <div><span class="label">Pages</span><ul><li><a href="#work">Work</a></li><li><a href="#services">Services</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul></div>
+    <div><span class="label">Elsewhere</span><ul><li><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a></li><li><a href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></li><li><a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+  </div>
+  <div class="foot-base label"><span>© 2026 Pixelclay Design LLP · LLPIN AAX-1466</span><span>Made between pixels and clay</span></div>
+</div></footer>
+
+<script>
+(function(){
+"use strict";
+var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+var fine=matchMedia("(pointer:fine)").matches;
+function clamp(v,a,b){return v<a?a:v>b?b:v}
+function smooth(t){return t*t*(3-2*t)}
+function tok(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+var probe=document.createElement("canvas").getContext("2d");
+function rgb(c){probe.fillStyle="#000";probe.fillStyle=c;var h=probe.fillStyle;if(h[0]==="#")return[parseInt(h.substr(1,2),16),parseInt(h.substr(3,2),16),parseInt(h.substr(5,2),16)];var m=h.match(/[\d.]+/g)||[0,0,0];return[+m[0],+m[1],+m[2]]}
+
+/* ================= projects ================= */
+var P=[
+  {t:"Kesari Mills",d:"Identity and swing-tag system for a cotton yarn mill moving into retail.",c:["Brand","Packaging"],y:"2026",art:["#FF4B2B","#1A1A1A","#F4F1EC"],k:0},
+  {t:"Hosa Shaale",d:"A learning app for Kannada-medium classrooms, tested in four government schools.",c:["Product"],y:"2026",art:["#0F5C4A","#F4F1EC","#FF4B2B"],k:1},
+  {t:"Benne Dose House",d:"Menu boards, takeaway packs and signage for a family dose restaurant.",c:["Brand","Packaging"],y:"2025",art:["#FFD8CC","#FF4B2B","#1A1A1A"],k:2},
+  {t:"Tunga Clinics",d:"A bilingual site with appointment booking for a group of three clinics.",c:["Web"],y:"2025",art:["#1A1A1A","#F4F1EC","#FF4B2B"],k:3},
+  {t:"Raitha Mitra",d:"A mandi price dashboard that farmers read on low-cost Android phones.",c:["Product","Web"],y:"2025",art:["#E9E4DB","#0F5C4A","#FF4B2B"],k:4},
+  {t:"Shanthi Silks",d:"An online store for handloom sarees, with photography direction.",c:["Web","Brand"],y:"2024",art:["#FF4B2B","#1A1A1A","#F4F1EC"],k:5}
+];
+function cover(p){
+  var a=p.art,b=a[0],f=a[1],g=a[2],h="";
+  switch(p.k){
+    case 0:h='<b style="left:12%;top:18%;width:34%;height:64%;background:'+f+'"></b><b style="right:12%;top:18%;width:30%;aspect-ratio:1;border-radius:50%;background:'+g+'"></b><b style="right:12%;bottom:18%;width:30%;height:8%;background:'+f+'"></b>';break;
+    case 1:h='<b style="left:30%;top:10%;width:40%;height:80%;border-radius:22px;background:'+f+'"></b><b style="left:36%;top:20%;width:28%;height:12%;border-radius:6px;background:'+g+'"></b><b style="left:36%;top:38%;width:28%;height:6%;border-radius:4px;background:'+b+';opacity:.35"></b><b style="left:36%;top:48%;width:20%;height:6%;border-radius:4px;background:'+b+';opacity:.35"></b>';break;
+    case 2:h='<b style="left:19%;top:12.5%;width:62%;aspect-ratio:1;border-radius:50%;background:'+f+'"></b><b style="left:28%;top:24.5%;width:44%;aspect-ratio:1;border-radius:50%;background:'+b+'"></b><b style="left:43%;top:44%;width:14%;aspect-ratio:1;border-radius:50%;background:'+g+'"></b>';break;
+    case 3:h='<b style="left:12%;top:14%;width:76%;height:10%;background:'+f+';opacity:.9"></b><b style="left:12%;top:32%;width:36%;height:52%;background:'+g+'"></b><b style="left:52%;top:32%;width:36%;height:24%;background:'+f+'"></b><b style="left:52%;top:60%;width:36%;height:24%;border:3px solid '+f+'"></b>';break;
+    case 4:for(var i=0;i<9;i++){var hh=18+((i*37)%55);h+='<b style="left:'+(10+i*9)+'%;bottom:16%;width:6%;height:'+hh+'%;background:'+(i==6?g:f)+';transform-origin:bottom"></b>'}break;
+    case 5:for(var j=0;j<6;j++){h+='<b style="left:0;right:0;top:'+(j*17)+'%;height:'+(j%2?5:11)+'%;background:'+(j%2?f:g)+';opacity:'+(j%2?1:.25)+'"></b>'}h+='<b style="left:39%;top:34%;width:22%;aspect-ratio:1;transform:rotate(45deg);background:'+f+'"></b>';break;
+  }
+  return '<div class="cover" style="background:'+b+'">'+h+'</div>';
+}
+function card(p){return '<a class="proj rv" href="#contact" data-cats="'+p.c.join(" ")+'">'+cover(p)+'<div class="proj-meta"><h3>'+p.t+'</h3><span class="chip">'+p.c.join(" · ")+" · "+p.y+'</span></div><p>'+p.d+'</p></a>'}
+document.getElementById("homeWork").innerHTML=P.slice(0,4).map(card).join("");
+var all=document.getElementById("allWork");all.innerHTML=P.map(card).join("");
+document.querySelectorAll(".filters button").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var f=btn.dataset.f;
+    document.querySelectorAll(".filters button").forEach(function(b){b.setAttribute("aria-pressed",String(b===btn))});
+    all.querySelectorAll(".proj").forEach(function(el){el.hidden=!(f==="All"||el.dataset.cats.split(" ").indexOf(f)>-1)});
+  });
+});
+
+/* ================= letter squish on page heads ================= */
+document.querySelectorAll(".sq").forEach(function(h){
+  var i=0,words=h.textContent.trim().split(/\s+/);
+  h.setAttribute("aria-label",h.textContent.trim());
+  h.innerHTML=words.map(function(w){return '<span class="w" aria-hidden="true">'+w.split("").map(function(ch){return '<span class="l" style="--i:'+(i++)+'">'+ch+"</span>"}).join("")+"</span>"}).join(" ");
+});
+
+/* ================= reveal ================= */
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{rootMargin:"0px 0px -8% 0px"});
+function watchReveals(){document.querySelectorAll(".rv:not(.in)").forEach(function(el){io.observe(el)})}
+
+/* ================= routing ================= */
+var routes=["home","work","services","about","contact"];
+var links=document.getElementById("navLinks"),mb=document.getElementById("menuBtn");
+function show(){
+  var r=(location.hash||"#home").slice(1);if(routes.indexOf(r)<0)r="home";
+  document.querySelectorAll(".view").forEach(function(v){v.hidden=v.dataset.view!==r});
+  document.querySelectorAll("[data-route]").forEach(function(a){a.dataset.route===r?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current")});
+  links.classList.remove("open");mb.setAttribute("aria-expanded","false");
+  window.scrollTo(0,0);
+  var h=document.querySelector('[data-view="'+r+'"] .sq');
+  if(h&&!reduce){h.classList.remove("go");void h.offsetWidth;h.classList.add("go")}
+  watchReveals();
+  if(r==="home"){sceneResize();kick()}
+}
+mb.addEventListener("click",function(){var o=links.classList.toggle("open");mb.setAttribute("aria-expanded",String(o))});
+
+/* ================= cursor + magnetic buttons ================= */
+if(fine&&!reduce){
+  var blob=document.getElementById("blob"),bx=-50,by=-50,tx=-50,ty=-50;
+  addEventListener("pointermove",function(e){tx=e.clientX;ty=e.clientY});
+  document.addEventListener("pointerover",function(e){blob.classList.toggle("big",!!e.target.closest("a,button,canvas#wheel"))});
+  (function cur(){bx+=(tx-bx)*.2;by+=(ty-by)*.2;blob.style.transform="translate("+bx.toFixed(1)+"px,"+by.toFixed(1)+"px)";requestAnimationFrame(cur)})();
+  document.querySelectorAll(".mag").forEach(function(b){
+    b.addEventListener("pointermove",function(e){var r=b.getBoundingClientRect();b.style.transform="translate("+((e.clientX-r.left-r.width/2)*.25).toFixed(1)+"px,"+((e.clientY-r.top-r.height/2)*.35).toFixed(1)+"px)"});
+    b.addEventListener("pointerleave",function(){b.style.transform=""});
+  });
+}
+
+/* ================= contact brief ================= */
+var form=document.getElementById("brief"),err=document.getElementById("fErr");
+form.addEventListener("submit",function(e){
+  e.preventDefault();
+  var n=fName.value.trim(),m=fEmail.value.trim(),msg=fMsg.value.trim();
+  if(!n||!/^\S+@\S+\.\S+$/.test(m)||!msg){err.textContent="Add your name, a valid email and a few lines about the project, then try again.";err.hidden=false;return}
+  err.hidden=true;
+  var t=[].slice.call(form.querySelectorAll(".types input:checked")).map(function(i){return i.value});
+  briefOut.textContent="Project brief for Pixelclay\n\nName: "+n+"\nEmail: "+m+"\nBusiness: "+(fCompany.value.trim()||"Not given")+"\nNeeds: "+(t.join(", ")||"Not sure yet")+"\nBudget: "+fBudget.value+"\n\n"+msg;
+  formBody.hidden=true;sent.hidden=false;
+});
+editBrief.addEventListener("click",function(){sent.hidden=true;formBody.hidden=false});
+copyBrief.addEventListener("click",function(){
+  function sel(){var r=document.createRange();r.selectNodeContents(briefOut);var s=getSelection();s.removeAllRanges();s.addRange(r);copyBrief.textContent="Selected. Press Ctrl or ⌘ + C"}
+  try{navigator.clipboard.writeText(briefOut.textContent).then(function(){copyBrief.textContent="Copied"},sel)}catch(x){sel()}
+});
+
+/* ================= the scroll scene: pixels to clay ================= */
+var scene=document.getElementById("scene"),cv=document.getElementById("px"),ctx=cv.getContext("2d");
+var caps=[].slice.call(document.querySelectorAll(".cap")),rails=[].slice.call(document.querySelectorAll(".rail span")),hint=document.getElementById("hint");
+var W=0,H=0,dpr=1,cx=0,cy=0,S=100,N=0,parts=[],textPts=[],T=0,disp=0,target=0,running=false,visible=true,last=0,lastCap=[],colTick=0;
+var COL={};
+function readCols(){COL.ink=rgb(tok("--ink"));COL.clay=rgb(tok("--clay"));COL.accent=rgb(tok("--accent"))}
+function sampleMask(draw,w,h,count){
+  var oc=document.createElement("canvas");oc.width=w;oc.height=h;var o=oc.getContext("2d");draw(o);
+  var d=o.getImageData(0,0,w,h).data,pts=[],tries=0;
+  while(pts.length<count&&tries<count*400){tries++;var x=Math.random()*w|0,y=Math.random()*h|0,k=(y*w+x)*4;if(d[k+3]>128)pts.push({x:x-w/2,y:y-h/2,g:d[k+1]>d[k]?1:0})}
+  while(pts.length<count)pts.push(pts.length?pts[pts.length*Math.random()|0]:{x:0,y:0,g:0});
+  return pts;
+}
+function sceneResize(){
+  if(scene.closest(".view").hidden)return;
+  var r=cv.getBoundingClientRect();if(!r.width)return;
+  dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;
+  var wide=W>900;cx=wide?W*.66:W*.5;cy=wide?H*.5:H*.36;S=wide?Math.min(W*.24,H*.36):Math.min(W*.34,H*.24);
+  N=W<700?760:1500;
+  readCols();
+  var g=W<700?14:18;
+  // wordmark
+  var tw=Math.min(W*.84,1150),fs=tw/4.6,th=fs*1.3;
+  textPts=sampleMask(function(o){o.font="900 "+fs+"px Archivo, Arial Black, sans-serif";o.textAlign="center";o.textBaseline="middle";var a=o.measureText("pixel").width,b=o.measureText("clay").width,x0=tw/2-(a+b)/2;o.textAlign="left";o.fillStyle="#f00";o.fillText("pixel",x0,th/2);o.fillStyle="#0f0";o.fillText("clay",x0+a,th/2)},Math.ceil(tw),Math.ceil(th),N);
+  var tOff=W/2-cx, tyOff=wide?0:H*.02;
+  parts=[];
+  for(var i=0;i<N;i++){
+    var rr=Math.random(),k=rr<.06?"accent":rr<.15?"clay":"ink";
+    var cell=Math.random()*9|0,G=S*1.5,cs=G/3,gx=(cell%3-1)*cs,gy=((cell/3|0)-1)*cs,c=cs*.84,mx,my,mr=0,mk="ink";
+    if(cell===2||cell===8){var a=Math.random()*Math.PI*2,rad=Math.sqrt(Math.random())*c/2;mx=gx+Math.cos(a)*rad;my=gy+Math.sin(a)*rad;mr=1;mk="clay"}
+    else{mx=gx+(Math.random()-.5)*c;my=gy+(Math.random()-.5)*c;if(cell===4){mk="accent";mr=.5}}
+    parts.push({
+      d:Math.random(),
+      sx:Math.round((Math.random()*W)/g)*g-cx, sy:Math.round((Math.random()*H)/g)*g-cy, sk:k,
+      th:Math.random()*Math.PI*2, u:Math.random()*2-1,
+      vy:Math.random()*2-1, va:Math.random()*Math.PI*2,
+      tx:textPts[i].x+tOff, ty:textPts[i].y+tyOff, tk:textPts[i].g?"clay":"ink",
+      mx:mx, my:my, mk:mk, mr:mr
+    });
+  }
+}
+function vaseR(y){var t=(y+1)/2;if(t<.06)return .3;return .16+.52*Math.pow(Math.sin(Math.PI*(.12+.82*t)),1.6)+.06*Math.sin(t*14)*(t>.2&&t<.4?1:0)}
+var out={x:0,y:0,s:0,r:0,c:null,l:1};
+function at(stage,p){
+  switch(stage){
+    case 0:out.x=p.sx;out.y=p.sy;out.s=W<700?3.2:4;out.r=0;out.c=COL[p.sk];out.l=p.sk==="ink"?.55:1;break;
+    case 1:{var phi=Math.acos(p.u),ang=p.th+T*.5,R=S*.92*(1+.05*Math.sin(3*p.th+T*1.3)),dep=Math.sin(phi)*Math.sin(ang);
+      out.x=R*Math.sin(phi)*Math.cos(ang);out.y=R*p.u;out.s=(W<700?3.2:4)*(.75+.35*(dep+1)/2);out.r=1;out.c=COL.clay;out.l=.35+.65*(dep+1)/2;break}
+    case 2:{var ang2=p.va+T*1.1,rv=vaseR(p.vy)*S*1.25,dep2=Math.sin(ang2);
+      out.x=rv*Math.cos(ang2);out.y=p.vy*S*1.15;out.s=(W<700?3:3.8)*(.75+.35*(dep2+1)/2);out.r=1;out.c=COL.clay;out.l=.3+.7*(dep2+1)/2*(.6+.4*(1-Math.abs(Math.cos(ang2))));break}
+    case 3:out.x=p.tx;out.y=p.ty;out.s=W<700?2.4:3;out.r=.25;out.c=COL[p.tk];out.l=1;break;
+    case 4:out.x=p.mx;out.y=p.my;out.s=W<700?3.6:4.6;out.r=p.mr;out.c=COL[p.mk];out.l=1;break;
+  }
+  return out;
+}
+function frame(now){
+  running=false;
+  if(!visible||scene.closest(".view").hidden)return;
+  var dt=Math.min(.05,(now-(last||now))/1000);last=now;
+  disp+=(target-disp)*(reduce?1:.1);if(Math.abs(target-disp)<.0004)disp=target;
+  var u=disp*4,a=Math.min(3,Math.floor(u)),loc=u-a;
+  var f=smooth(clamp((loc-.12)/.66,0,1)),b=a+1;
+  if(disp>=1){a=3;b=4;f=1}
+  var spin=(a===1||a===2||b===2)&&!reduce;
+  if(spin)T+=dt;
+  if(++colTick%90===0)readCols();
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  var paper=rgb(tok("--paper"));
+  for(var i=0;i<N;i++){
+    var p=parts[i];
+    var t=reduce?f:smooth(clamp(f*1.45-p.d*.45,0,1));
+    var A=at(a,p),ax=A.x,ay=A.y,as=A.s,ar=A.r,ac=A.c,al=A.l;
+    var B=at(b,p);
+    var x=cx+ax+(B.x-ax)*t,y=cy+ay+(B.y-ay)*t,s=as+(B.s-as)*t,r=ar+(B.r-ar)*t,l=al+(B.l-al)*t;
+    // little arc when travelling, like clay flung off a wheel
+    var lift=Math.sin(t*Math.PI)*(p.d-.5)*S*.5;y+=lift;
+    var cr=ac[0]+(B.c[0]-ac[0])*t,cg=ac[1]+(B.c[1]-ac[1])*t,cb=ac[2]+(B.c[2]-ac[2])*t;
+    cr=paper[0]+(cr-paper[0])*l;cg=paper[1]+(cg-paper[1])*l;cb=paper[2]+(cb-paper[2])*l;
+    ctx.fillStyle="rgb("+(cr|0)+","+(cg|0)+","+(cb|0)+")";
+    if(r>.6){ctx.beginPath();ctx.arc(x,y,s/2,0,6.2832);ctx.fill()}
+    else if(r>.1&&ctx.roundRect){ctx.beginPath();ctx.roundRect(x-s/2,y-s/2,s,s,s*r/2);ctx.fill()}
+    else ctx.fillRect(x-s/2,y-s/2,s,s);
+  }
+  // captions: write to DOM only on change
+  for(var c=0;c<caps.length;c++){
+    var o=1-clamp((Math.abs(u-(c-.05))-.2)*3.5,0,1);
+    if(c===4)o=clamp((u-3.6)*3,0,1);
+    if(c===0)o=1-clamp((u-.15)*3,0,1);
+    o=Math.round(o*100)/100;
+    if(lastCap[c]!==o){lastCap[c]=o;caps[c].style.opacity=o;caps[c].style.transform="translateY("+((1-o)*24).toFixed(1)+"px)";caps[c].classList.toggle("on",o>.5);caps[c].setAttribute("aria-hidden",o<.5?"true":"false")}
+  }
+  var cur=Math.round(clamp(u,0,4));
+  rails.forEach(function(el,k){el.classList.toggle("on",k===cur)});
+  hint.style.opacity=u<.1?1:0;
+  if(disp!==target||spin)kick();
+}
+function kick(){if(!running){running=true;requestAnimationFrame(frame)}}
+function onScroll(){
+  if(scene.closest(".view").hidden)return;
+  var r=scene.getBoundingClientRect(),total=r.height-innerHeight;
+  target=clamp(-r.top/total,0,1);kick();
+}
+addEventListener("scroll",onScroll,{passive:true});
+addEventListener("resize",function(){sceneResize();onScroll();kick();wheelResize()});
+new IntersectionObserver(function(es){visible=es[0].isIntersecting;if(visible){last=0;kick()}}).observe(scene);
+var themeObs=new MutationObserver(function(){readCols();kick();wheelDraw()});themeObs.observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){readCols();kick();wheelDraw()});
+
+/* ================= the wheel ================= */
+var wc=document.getElementById("wheel"),wx=wc.getContext("2d"),WW=0,WH=0,wd=1,M=56,prof=[],goal=[],phase=0,wVis=false,wRun=false,glazeI=0;
+var GLAZES=[["Raw clay",null],["Celadon","#86A893"],["Indigo","#3B4FD6"],["Temmoku","#3A2618"],["Haldi","#D8A21E"]];
+function wheelReset(){prof=[];goal=[];for(var i=0;i<M;i++){prof.push(.3);goal.push(.3)}}
+function wheelResize(){var r=wc.getBoundingClientRect();if(!r.width)return;wd=Math.min(2,devicePixelRatio||1);WW=r.width;WH=r.height;wc.width=WW*wd;wc.height=WH*wd;wheelDraw()}
+function potColor(){var g=GLAZES[glazeI][1];return rgb(g||tok("--clay"))}
+function wheelDraw(){
+  if(!WW)return;
+  wx.setTransform(wd,0,0,wd,0,0);wx.clearRect(0,0,WW,WH);
+  var ink=tok("--ink"),cxw=WW/2,top=WH*.16,bot=WH*.8,rowH=(bot-top)/M,maxW=WW*.42,base=potColor(),line=tok("--line");
+  // wheel head
+  wx.fillStyle=line;wx.beginPath();wx.ellipse(cxw,bot+6,maxW*1.05,16,0,0,6.2832);wx.fill();
+  wx.fillStyle=ink;wx.globalAlpha=.85;wx.beginPath();wx.ellipse(cxw,bot+2,maxW*.95,12,0,0,6.2832);wx.fill();wx.globalAlpha=1;
+  for(var i=0;i<M;i++){
+    var rw=prof[i]*maxW,y=top+i*rowH;
+    var gr=wx.createLinearGradient(cxw-rw,0,cxw+rw,0);
+    function sh(m){return "rgb("+(base[0]*m|0)+","+(base[1]*m|0)+","+(base[2]*m|0)+")"}
+    gr.addColorStop(0,sh(.55));gr.addColorStop(.32,sh(1.12));gr.addColorStop(.6,sh(.95));gr.addColorStop(1,sh(.5));
+    wx.fillStyle=gr;wx.fillRect(cxw-rw,y,rw*2,rowH+1);
+    // throwing rings and turning marks
+    for(var k=0;k<5;k++){var an=phase+k*1.2566+i*.05,c=Math.cos(an);if(c>0){wx.fillStyle="rgba(0,0,0,"+(.1*c).toFixed(3)+")";wx.fillRect(cxw+rw*Math.sin(an)-1,y,2,rowH+1)}}
+    if(i%7===3){wx.fillStyle="rgba(0,0,0,.07)";wx.fillRect(cxw-rw,y,rw*2,1)}
+  }
+  // rim and opening
+  var r0=prof[0]*maxW;
+  wx.fillStyle="rgb("+(base[0]*.35|0)+","+(base[1]*.35|0)+","+(base[2]*.35|0)+")";wx.beginPath();wx.ellipse(cxw,top,r0,Math.max(4,r0*.18),0,0,6.2832);wx.fill();
+  wx.strokeStyle="rgb("+Math.min(255,base[0]*1.15|0)+","+Math.min(255,base[1]*1.15|0)+","+Math.min(255,base[2]*1.15|0)+")";wx.lineWidth=2;wx.stroke();
+}
+function wheelLoop(){
+  wRun=false;if(!wVis)return;
+  var moving=false;for(var i=0;i<M;i++){var d=goal[i]-prof[i];if(Math.abs(d)>.0005)moving=true;prof[i]+=d*.25}
+  if(!reduce)phase+=.06;
+  wheelDraw();
+  if(!reduce||moving)wKick();
+}
+function wKick(){if(!wRun){wRun=true;requestAnimationFrame(wheelLoop)}}
+var dragging=false;
+function shape(e){
+  var r=wc.getBoundingClientRect(),y=(e.clientY-r.top)/r.height,x=(e.clientX-r.left)/r.width;
+  var idx=(y-.16)/(.64)*M;if(idx<-4||idx>M+4)return;
+  var want=clamp(Math.abs(x-.5)/.42,.06,1);
+  for(var i=0;i<M;i++){var w=Math.exp(-Math.pow((i-idx)/5,2));goal[i]+= (want-goal[i])*w*.5}
+  wKick();
+}
+wc.addEventListener("pointerdown",function(e){dragging=true;shape(e)});
+wc.addEventListener("pointermove",function(e){if(dragging||e.pointerType==="mouse"&&e.buttons)shape(e)});
+addEventListener("pointerup",function(){dragging=false});
+wc.addEventListener("pointerleave",function(){dragging=false});
+wc.addEventListener("pointercancel",function(){dragging=false});
+document.getElementById("glaze").addEventListener("click",function(){glazeI=(glazeI+1)%GLAZES.length;document.getElementById("glazeName").textContent=GLAZES[glazeI][0];this.textContent=glazeI===GLAZES.length-1?"Back to raw":"Try another glaze";wheelDraw();wKick()});
+document.getElementById("reset").addEventListener("click",function(){for(var i=0;i<M;i++)goal[i]=.3;glazeI=0;document.getElementById("glazeName").textContent="Raw clay";document.getElementById("glaze").textContent="Glaze it";wKick()});
+new IntersectionObserver(function(es){wVis=es[0].isIntersecting;if(wVis){wheelResize();wKick()}}).observe(wc);
+// start with a soft vase so the first look shows what it does
+wheelReset();for(var q=0;q<M;q++){var tt=q/(M-1);goal[q]=prof[q]=.18+.5*Math.pow(Math.sin(Math.PI*(.1+.8*tt)),1.5)}
+
+/* ================= boot ================= */
+addEventListener("hashchange",show);
+function boot(){show();sceneResize();onScroll();kick();wheelResize()}
+if(document.fonts&&document.fonts.load){Promise.race([document.fonts.load('900 80px "Archivo"'),new Promise(function(r){setTimeout(r,1500)})]).then(boot,boot)}else boot();
+})();
+</script>
+
+</body></html>
